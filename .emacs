@@ -20,7 +20,7 @@
   :config
   (setq doom-modeline-support-imenu t
 	doom-modeline-height 25
-	doom-modeline-bar-width 4
+	doom-modeline-bar-width 0
 	doom-modeline-hud t
 	doom-modeline-window-width-limit 85
 	doom-modeline-project-detection 'auto
@@ -89,20 +89,20 @@
   :ensure t
   :config
   (dashboard-setup-startup-hook)
-  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  (setq dashboard-banner-logo-title "Добро пожаловать домой :3")
-  (setq dashboard-startup-banner 'logo)
-  (setq dashboard-center-content t)
-  (setq dashboard-projects-backend 'projectile)
-  (setq dashboard-items '((recents  . 5)
-			  (projects . 5)))
-  (setq dashboard-item-names '(("Recent Files:" . "Последние файлы:")
-			       ("Projects:" . "Проекты:")))
-  (setq dashboard-set-heading-icons t)
-  (setq dashboard-set-file-icons t)
-  (setq dashboard-set-navigator t)
-  (setq dashboard-set-footer nil)
-  (setq dashboard-set-init-info nil))
+  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*"))
+	dashboard-banner-logo-title "Добро пожаловать домой :3"
+	dashboard-startup-banner 'logo
+	dashboard-center-content t
+	dashboard-projects-backend 'projectile
+	dashboard-items '((recents  . 5)
+			  (projects . 5))
+	dashboard-item-names '(("Recent Files:" . "Последние файлы:")
+			       ("Projects:" . "Проекты:"))
+	dashboard-set-heading-icons t
+	dashboard-set-file-icons t
+	dashboard-set-navigator t
+	dashboard-set-footer nil
+	dashboard-set-init-info nil))
 
 ;; Удобные отступы
 (global-aggressive-indent-mode 1)
@@ -122,12 +122,40 @@
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; Языковой сервер
-(use-package lsp-ui
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :hook
+  (lsp-mode . lsp-enable-which-key-integration)
+  :commands (lsp lsp-deferred)
   :config
-  (setq lsp-ui-sideline-show-diagnostics
-	lsp-ui-sideline-show-hover
-	lsp-ui-sideline-delay 0.5))
-(lsp-ui-mode)
+  (setq lsp-auto-configure nil
+	lsp-enable-file-watchers nil
+	lsp-prefer-capf t
+	lsp-auto-guess-root t
+	lsp-keep-workspace-alive nil))
+
+(use-package ccls
+  :hook ((c-mode c++-mode objc-mode cuda-mode) .
+	 (lambda () (require 'ccls) (lsp))))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :commands lsp-ui-mode
+  :config
+  (setq lsp-ui-sideline-enable            t
+	lsp-ui-sideline-show-diagnostics  t
+	lsp-ui-sideline-show-hover        nil
+	lsp-ui-sideline-update-mode       'line
+	lsp-ui-sideline-show-code-actions t
+	lsp-ui-sideline-delay             0.05
+	lsp-ui-doc-enable                 nil
+	lsp-ui-doc-include-signature      t
+	lsp-ui-doc-border                 (face-foreground 'default)
+	))
+
+(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+
 
 ;; Помощь с командами в буффере
 (use-package helm
@@ -156,6 +184,8 @@
 
 ;; Автозавершение
 (use-package company
+  :after lsp-mode
+  :hook (prog-mode . company-mode)
   :config
   (setq company-minimum-prefix-lenght 1
 	company-idle-delay 0.0
@@ -172,7 +202,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(neotree helm-tree-sitter doom-modeline all-the-icons-completion winum aggressive-completion aggressive-indent rainbow-delimiters helm-projectile projectile all-the-icons dashboard company-ctags lsp-treemacs helm-lsp ls-ui lsp-ui flycheck company helm-fish-completion which-key ## helm use-package tree-sitter-langs nord-theme)))
+   '(monokai-pro-theme dracula-theme ccls helm-flycheck neotree helm-tree-sitter doom-modeline all-the-icons-completion winum aggressive-completion aggressive-indent rainbow-delimiters helm-projectile projectile all-the-icons dashboard company-ctags lsp-treemacs helm-lsp ls-ui lsp-ui flycheck company helm-fish-completion which-key ## helm use-package tree-sitter-langs nord-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
