@@ -13,10 +13,69 @@
 (menu-bar-mode -1)
 (set-frame-font "Source Code Pro-10")
 
+;; Красивый статусбар
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :config
+  (setq doom-modeline-support-imenu t
+	doom-modeline-height 25
+	doom-modeline-bar-width 4
+	doom-modeline-hud t
+	doom-modeline-window-width-limit 85
+	doom-modeline-project-detection 'auto
+	doom-modeline-buffer-file-name-style 'auto
+	doom-modeline-icon t
+	doom-modeline-major-mode-icon t
+	doom-modeline-major-mode-color-icon t
+	doom-modeline-time-icon t
+	doom-modeline-unicode-fallback nil
+	doom-modeline-buffer-name t
+	doom-modeline-highlight-modified-buffer-name t
+	doom-modeline-minor-modes nil
+	doom-modeline-enable-word-count nil
+	doom-modeline-buffer-encoding t
+	doom-modeline-vcs-max-length 12
+	doom-modeline-workspace-name t
+	doom-modeline-persp-name t
+	doom-modeline-display-default-persp-name nil
+	doom-modeline-persp-icon t
+	doom-modeline-lsp t
+	doom-modeline-modal t
+	doom-modeline-modal-icon t
+	doom-modeline-gnus t
+	doom-modeline-gnus-timer 2
+	doom-modeline-gnus-excluded-groups '("dummy.group")
+	doom-modeline-time t
+	doom-modeline-env-enable-python t
+	doom-modeline-env-enable-c++ t
+	doom-modeline-env-enable-c t
+	doom-modeline-env-enable-rust t
+	doom-modeline-env-load-string "..."
+	doom-modeline-before-update-env-hook nil
+	doom-modeline-after-update-env-hook nil))
+
+;; Отключение автосохранения и backup файлов
+(setq make-backup-files nil)
+(setq auto-save-default nil)
+
+;; Красивые иконки
+(use-package all-the-icons
+  :ensure t)
+
 ;; Добавление репозитория MELPA
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
+
+;; Neotree
+(use-package neotree
+  :bind (("M-o" . 'neotree-toggle))
+  :config
+  (setq neo-theme (if (display-graphic-p) 'icons 'arrow)
+	neo-smart-open t
+	projectile-switch-project-action 'neotree-projectile-action
+	))
 
 ;; Установка use-package, если не установлен
 (unless (package-installed-p 'use-package)
@@ -113,7 +172,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(aggressive-completion aggressive-indent rainbow-delimiters helm-projectile projectile all-the-icons dashboard company-ctags lsp-treemacs helm-lsp ls-ui lsp-ui flycheck company helm-fish-completion which-key ## helm use-package tree-sitter-langs nord-theme)))
+   '(neotree helm-tree-sitter doom-modeline all-the-icons-completion winum aggressive-completion aggressive-indent rainbow-delimiters helm-projectile projectile all-the-icons dashboard company-ctags lsp-treemacs helm-lsp ls-ui lsp-ui flycheck company helm-fish-completion which-key ## helm use-package tree-sitter-langs nord-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
